@@ -9,9 +9,9 @@ package com.github.vatbub.mavenbatchexecutor.core;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -120,13 +120,14 @@ public class ProjectList extends ArrayList<Project> {
     }
 
     private int getMinIndexOfModules(Project project, Model model, List<MavenModelWrapper> smartListPoms, List<MavenModelWrapper> submodulePoms, int minIndex) throws IOException, XmlPullParserException {
-        if (project.getProjectFolder().getAbsolutePath().equals("C:\\Users\\frede\\git\\tictactoe"))
-            System.out.println("Stopping...");
         for (Dependency dependency : model.getDependencies()) {
             int dependencyIndex = findIndexOfDependency(smartListPoms, submodulePoms, dependency);
             minIndex = Math.max(dependencyIndex, minIndex);
-            if (dependencyIndex > -1)
-                project.getDependencies().add(this.get(dependencyIndex));
+            if (dependencyIndex > -1) {
+                Project dependencyProject = this.get(dependencyIndex);
+                if (!dependencyProject.equals(project))
+                    project.getDependencies().add(dependencyProject);
+            }
         }
 
         for (String module : model.getModules()) {
